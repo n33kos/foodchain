@@ -9,11 +9,11 @@ class Plant < LivingEntity
 		@color.blue = rand(1..100)
 		@satiation = 1
 		@max_satiation = 20
-		@min_scale = 1 #Pixels
-		@max_scale = 20 #Pixels
+		@min_scale = $winwidth*0.002
+		@max_scale = $winwidth*0.020
 		@density = 0.1
 		@age = 1
-		@max_age = 2000
+		@max_age = 500
 		@overgrowthlimit = 2
 		@reproduction_distance = 2000
 		@predatorvalue = 0
@@ -43,15 +43,14 @@ class Plant < LivingEntity
 		if rand(0..1000) < @virility && $Plants.length < $max_plants
 			newx = entity.translation.x
 			newy = entity.translation.y
-			$DecayingEntities.delete(entity)
 			$Plants << Plant.new()
 			$Plants[-1].translation.x(newx)
 			$Plants[-1].translation.y(newy)
 
 			newcolor = Gosu::Color.new(0xffffffff)
-			newcolor.red = @color.red+rand(-10..10)
-			newcolor.green = @color.green+rand(-10..10)
-			newcolor.blue = @color.blue+rand(-10..10) 
+			newcolor.red = @color.red+rand(-2..2)
+			newcolor.green = @color.green+rand(-2..2)
+			newcolor.blue = @color.blue+rand(-2..2) 
 			$Plants[-1].color(newcolor)
 
 			newgenerationcount = $Plants[-1].generation_count+@generation_count
@@ -62,26 +61,52 @@ class Plant < LivingEntity
 
 			mutation entity
 			self.satiation(self.satiation/2)
+
+			$DecayingEntities.delete(entity)
 		end
 	end
 
 	def mutation entity
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newvirility = @virility+rand(-1..1).clamp(0,99999)
-		$Plants[-1].virility(newvirility)
+			newvirility = @virility+(2*rand_array[0]).clamp(0,99999)
+			$Plants[-1].virility(newvirility)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newmaxsatiation = @max_satiation+rand(-1..1).clamp(0,99999)
-		$Plants[-1].max_satiation(newmaxsatiation)
+			newmaxsatiation = @max_satiation+(2*rand_array[0]).clamp(0,99999)
+			$Plants[-1].max_satiation(newmaxsatiation)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newmaxscale = @max_scale+rand(-1..1).clamp(0,99999)
-		$Plants[-1].max_scale(newmaxscale)
+			newmaxscale = @max_scale+(2*rand_array[0]).clamp(0,99999)
+			$Plants[-1].max_scale(newmaxscale)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newmaxage = @max_age+rand(-1..1).clamp(0,99999)
-		$Plants[-1].max_age(newmaxage)
+			newmaxage = @max_age+(2*rand_array[0]).clamp(0,99999)
+			$Plants[-1].max_age(newmaxage)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newovergrowthlimit = @overgrowthlimit+rand(-1..1).clamp(0,99999)
-		$Plants[-1].overgrowthlimit(newovergrowthlimit)
-
+			newovergrowthlimit = @overgrowthlimit+(2*rand_array[0]).clamp(0,99999)
+			$Plants[-1].overgrowthlimit(newovergrowthlimit)
+		end
 	end
 
 	def predatorvalue

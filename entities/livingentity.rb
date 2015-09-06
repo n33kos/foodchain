@@ -5,9 +5,9 @@ class LivingEntity
 		@velocity = Velocity.new(0,0)
 		@mass = 1
 		@density = 0.1 #Percentage
-		@min_scale = 10 #Pixels
-		@scale = 10 #Pixels
-		@max_scale = 30 #Pixels
+		@scale = $winwidth*0.010
+		@min_scale = $winwidth*0.010
+		@max_scale = $winwidth*0.015
 		@color = Gosu::Color.new(0xffffffff)
 		@color.red = rand(1..255)
 		@color.green = rand(1..255)
@@ -21,13 +21,13 @@ class LivingEntity
 		@min_speed = 1
 		@speed = 1
 		@max_speed = 5
-		@food_distance = 350
+		@food_distance = $winwidth/2
 		@virility = 50 #Inverted percentage
 		@isAlive = true
 		@generation_count = 1
 		@cleanliness = 50
-		@collision_quadrant = 0
-		@collision_subquadrant = 0
+		@collision_quadrant = calculateQuadrant(@translation.x,@translation.y,$winwidth,$winheight)
+		@collision_subquadrant = calculateSubQuadrant(@translation.x,@translation.y,$winwidth,@collision_quadrant)
 		@maturity_age = 40
 	end
 	
@@ -95,6 +95,8 @@ class LivingEntity
 	end
 
 	def processCollisions
+		@collision_quadrant = calculateQuadrant(@translation.x,@translation.y,$winwidth,$winheight)
+		@collision_subquadrant = calculateSubQuadrant(@translation.x,@translation.y,$winwidth,@collision_quadrant)
 		#Livingentities doesnt actually exist. This is a placeholder function and should be overridden
 		for entity in $LivingEntities do
 			didcollide = detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale)

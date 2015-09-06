@@ -8,19 +8,20 @@ class Predator < LivingEntity
 		else
 			@sex = 1
 		end
-		@density = 0.30 #Percentage
+		@density = 0.4 #Percentage
 		@virility = 30
-		@min_scale = 15 #Pixels
-		@scale = 15 #Pixels
-		@max_scale = 20 #Pixels
+		@scale = $winwidth*0.020
+		@min_scale = $winwidth*0.020
+		@max_scale = $winwidth*0.030
 		@max_age = 3000
 		@satiation = 5
 		@max_satiation = 50
 		@color.red = rand(1..255)
 		@color.green = rand(1..25)
 		@color.blue = rand(1..25)
-		@food_distance = $winwidth
 		@cleanliness = 60
+		@collision_quadrant = calculateQuadrant(@translation.x,@translation.y,$winwidth,$winheight)
+		@collision_subquadrant = calculateSubQuadrant(@translation.x,@translation.y,$winwidth,@collision_quadrant)
 	end
 
 	def sexual_reproduction thefather
@@ -31,9 +32,9 @@ class Predator < LivingEntity
 			$Predators[-1].translation.y(@translation.y)
 
 			newcolor = Gosu::Color.new(0xffffffff)
-			newcolor.red = rand(0..1) == 0 ? self.color.red+rand(-10..10) : thefather.color.red+rand(-10..10)
-			newcolor.green = rand(0..1) == 0 ? self.color.green+rand(-10..10) : thefather.color.green+rand(-10..10)
-			newcolor.blue = rand(0..1) == 0 ? self.color.blue+rand(-10..10) : thefather.color.blue+rand(-10..10)
+			newcolor.red = rand(0..1) == 0 ? self.color.red+rand(-2..2) : thefather.color.red+rand(-2..2)
+			newcolor.green = rand(0..1) == 0 ? self.color.green+rand(-2..2) : thefather.color.green+rand(-2..2)
+			newcolor.blue = rand(0..1) == 0 ? self.color.blue+rand(-2..2) : thefather.color.blue+rand(-2..2)
 			$Predators[-1].color(newcolor)
 
 			newgenerationcount = self.generation_count+$Predators[-1].generation_count
@@ -45,60 +46,96 @@ class Predator < LivingEntity
 
 	def mutation thefather
 
-		newspeed = rand(0..1) == 0 ? self.speed+rand(-1..1).clamp(0,99999) : thefather.speed+rand(-1..1).clamp(0,99999)
-		$Predators[-1].speed(newspeed)
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newvirility = rand(0..1) == 0 ? self.virility+rand(-1..1).clamp(0,99999) : thefather.virility+rand(-1..1).clamp(0,99999)
-		$Predators[-1].virility(newvirility)
+			newspeed = rand(0..1) == 0 ? self.speed+(2*rand_array[0]).clamp(0,99999) : thefather.speed+(2*rand_array[0]).clamp(0,99999)
+			$Predators[-1].speed(newspeed)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newmaxsatiation = rand(0..1) == 0 ? self.max_satiation+rand(-1..1).clamp(0,99999) : thefather.max_satiation+rand(-1..1).clamp(0,99999)
-		$Predators[-1].max_satiation(newmaxsatiation)
-		
-		newmaxscale = rand(0..1) == 0 ? self.max_scale+rand(-1..1).clamp(0,99999) : thefather.max_scale+rand(-1..1).clamp(0,99999)
-		$Predators[-1].max_scale(newmaxscale)
+			newvirility = rand(0..1) == 0 ? self.virility+(2*rand_array[0]).clamp(0,99999) : thefather.virility+(2*rand_array[0]).clamp(0,99999)
+			$Predators[-1].virility(newvirility)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newmaxage = rand(0..1) == 0 ? self.max_age+rand(-1..1).clamp(0,99999) : thefather.max_age+rand(-1..1).clamp(0,99999)
-		$Predators[-1].max_age(newmaxage)
+			newmaxsatiation = rand(0..1) == 0 ? self.max_satiation+(2*rand_array[0]).clamp(0,99999) : thefather.max_satiation+(2*rand_array[0]).clamp(0,99999)
+			$Predators[-1].max_satiation(newmaxsatiation)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newdensity = rand(0..1) == 0 ? self.density+rand(-0.01..0.01).clamp(0.0001,99999) : thefather.density+rand(-0.01..0.01).clamp(0.0001,99999)
-		$Predators[-1].density(newdensity)
+			newmaxscale = rand(0..1) == 0 ? self.max_scale+(2*rand_array[0]).clamp(0,99999) : thefather.max_scale+(2*rand_array[0]).clamp(0,99999)
+			$Predators[-1].max_scale(newmaxscale)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		newcleanliness = rand(0..1) == 0 ? self.cleanliness+rand(-1..1).clamp(1,99999) : thefather.cleanliness+rand(-1..1).clamp(1,99999)
-		$Predators[-1].cleanliness(newcleanliness)
+			newmaxage = rand(0..1) == 0 ? self.max_age+(2*rand_array[0]).clamp(0,99999) : thefather.max_age+(2*rand_array[0]).clamp(0,99999)
+			$Predators[-1].max_age(newmaxage)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
 
-		#newfood_distance = rand(0..1) == 0 ? self.food_distance+rand(-@scale..@scale).clamp(1,99999) : thefather.food_distance+rand(-@scale..@scale).clamp(1,99999)
-		#$Predators[-1].food_distance(newfood_distance)
+			newdensity = rand(0..1) == 0 ? self.density+(rand(-0.02...0.02)*rand_array[0]).clamp(0.0001,99999) : thefather.density+(rand(-0.02...0.02)*rand_array[0]).clamp(0.0001,99999)
+			$Predators[-1].density(newdensity)
+		end
+		if rand < 0.05
+			rand_array = []
+			16.times{rand_array << rand}
+			rand_array.sort! { |x,y| y <=> x }
+
+			newcleanliness = rand(0..1) == 0 ? self.cleanliness+(2*rand_array[0]).clamp(1,99999) : thefather.cleanliness+(2*rand_array[0]).clamp(1,99999)
+			$Predators[-1].cleanliness(newcleanliness)	
+		end
+
 	end
 
 	def processCollisions
-		@collision_quadrant = calculateQuadrant(@translation.x,@translation.y,$winwidth,$winheight)
-		@collision_subquadrant = calculateSubQuadrant(@translation.x,@translation.y,$winwidth,@collision_quadrant)
-		touchedpredators = $Predators.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
-		for entity in touchedpredators do
-			if entity != self
-				courtship entity
+		Thread.new{
+			@collision_quadrant = calculateQuadrant(@translation.x,@translation.y,$winwidth,$winheight)
+			@collision_subquadrant = calculateSubQuadrant(@translation.x,@translation.y,$winwidth,@collision_quadrant)
+			touchedpredators = $Predators.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
+			for entity in touchedpredators do
+				if entity != self
+					courtship entity
+					entityBounce entity
+					break
+				end
+			end
+			touchedprey = $Prey.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
+			for entity in touchedprey do
+				gainsatisfaction
+				beselfish entity
 				entityBounce entity
 				break
 			end
-		end
-		touchedprey = $Prey.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
-		for entity in touchedprey do
-			gainsatisfaction
-			beselfish entity
-			entityBounce entity
-			break
-		end
-		touchedplants = $Plants.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
-		for entity in touchedplants do
-			beselfish entity
-			entityBounce entity
-			break
-		end
-		toucheddecay = $DecayingEntities.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
-		for entity in toucheddecay do
-			parasiteCheck
-			break
-		end
+			touchedplants = $Plants.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
+			for entity in touchedplants do
+				beselfish entity
+				entityBounce entity
+				break
+			end
+			toucheddecay = $DecayingEntities.select { |entity| (entity.collision_subquadrant == @collision_subquadrant) && (entity.collision_quadrant == @collision_quadrant) && detectcollisions(@translation.x , @translation.y , @scale , entity.translation.x , entity.translation.y , entity.scale) }
+			for entity in toucheddecay do
+				parasiteCheck
+				break
+			end
+		}.join
 	end
 
 	def chooseDirection
@@ -129,10 +166,13 @@ class Predator < LivingEntity
 
 		if @satiation < @max_satiation/1.2
 			@velocity = Velocity.new(@velocity.x+(closestFoodDistx*@speed)/@mass, @velocity.y+(closestFoodDisty*@speed)/@mass)
-		elsif @age > @maturity_age
+		elsif @age > @maturity_age and @satiation > @max_satiation/1.2
 			@velocity = Velocity.new(@velocity.x+(closestFuckDistx*@speed)/@mass, @velocity.y+(closestFuckDisty*@speed)/@mass)
 		else
-			@velocity = Velocity.new(@velocity.x+(closestFoodDistx*@speed)/@mass, @velocity.y+(closestFoodDisty*@speed)/@mass)
+			#Head to center because we are confused.
+			xdist = ($winwidth/2) - @translation.x
+			ydist = ($winheight/2) - @translation.y
+			@velocity = Velocity.new(@velocity.x+(xdist*@speed)/@mass, @velocity.y+(ydist*@speed)/@mass)
 		end
 	end
 
