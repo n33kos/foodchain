@@ -10,6 +10,8 @@ __Features__
 	- Predators
 	- Plants
 	- Prey
+- Left Click to add predators
+- Right Click to add prey
 
 __Functionality__
 
