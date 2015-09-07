@@ -1,31 +1,34 @@
 Ruby Food Chain
------------------
-Features:
-	-Simulation of beings within closed 2D System.
-	-Genetic algorithms to determine children stats
-	-Simple 4 Type Food Chain [Parasites, Predators, Symbiotes[Plants,Predated]]
-		Parasites Eat:
-			-Predators
-			-Plants
-			-Predated
-		Plants Eat:
-			-Dead Predated
-			-Dead Plants
-			-Dead Parasites
-		Predated Eat:
-			-Plants
-		Predators Eat:
-			-Predated
+--------------------
 
-Functionality:
-	Parasites Passively Feed on life
-	Plants Passively Feed on death
-	Herbivores Actively Feed On The Living
-	Predators Actively Feed On The Dead
+__Features__
 
-Requirements:
-	Ruby: 2.0.0 (May not be required, but used 2.0.0 for development)
-	Gem: Gosu
+- Simulation of beings within closed 2D System.
+- Genetic algorithms to determine children stats
+- 4 Type Food Chain:
+	- Parasites
+	- Predators
+	- Plants
+	- Prey
 
-Usage:
-	-Run: "ruby foodchain.rb"
+__Functionality__
+
+- Parasites Passively Feed on Living Entities 
+- Plants Passively Feed on Decaying Entities
+- Herbivores Actively Feed On Plants
+- Predators Actively Feed On Prey
+
+__Requirements__
+
+- Ruby: 2.0.0 (May not be required, but used 2.0.0 for development)
+- Gem: Gosu
+
+__Usage__
+
+```
+	$> ruby foodchain.rb
+```
+
+__Binaries__
+
+Windows binaries compiled using the ocra gem can be found here: [https://github.com/n33kos/foodchain/tree/master/binaries](https://github.com/n33kos/foodchain/tree/master/binaries)
