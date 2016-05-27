@@ -14,18 +14,18 @@ class GameWindow < Gosu::Window
   def initialize
     #$winwidth = Gosu.screen_width/2
   	#$winheight = Gosu.screen_height/2
-    $winwidth = 600
-    $winheight = 600
+    $winwidth = 800
+    $winheight = 800
     super($winwidth, $winheight, false, 10)
     self.caption = "Food Chain Simulator v1.2"
     $font = Gosu::Font.new(self, "Arial", 14)
     $cursor = Gosu::Image.new(self, "Cursor.png", false)
 
-  	$max_plants = 175
-    $max_prey = 175
-    $max_predators = 175
-    $max_parasites = 175
-    $max_decaying = 175
+  	$max_plants = 100
+    $max_prey = 100
+    $max_predators = 100
+    $max_parasites = 100
+    $max_decaying = 100
     $DecayingEntities = []
     $Plants = []
     $Plant_Max_Generation = 1
@@ -48,7 +48,7 @@ class GameWindow < Gosu::Window
       temp_entity.age(rand(1..temp_entity.max_age))
       $Prey << temp_entity
     }
-    10.times{
+    15.times{
       temp_entity = Predator.new()
       $Predators << temp_entity
     }
